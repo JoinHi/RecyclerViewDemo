@@ -35,14 +35,47 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView recyclerView1;
     private MyAdapter1 adapter1;
     private LinearLayoutManager linearLayoutManager1;
+    private RecyclerView recyclerView2;
+    private MyAdapter1 adapter2;
+    private LinearLayoutManager linearLayoutManager2;
+    private RecyclerView recyclerView3;
+    private MyAdapter1 adapter3;
+    private LinearLayoutManager linearLayoutManager3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initView();
+        initView2();
+        initView3();
         initButton();
         initEvent();
+    }
+
+    private void initView3() {
+        recyclerView3 = findViewById(R.id.recycler3);
+        adapter3 = new MyAdapter1();
+        recyclerView3.setAdapter(adapter3);
+        linearLayoutManager3 = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        recyclerView3.setLayoutManager(linearLayoutManager3);
+//        LinearSnapHelper linearSnapHelper1 = new LinearSnapHelper();
+        MySnapHelper linearSnapHelper1 = new MySnapHelper();
+//        StartSnapHelper linearSnapHelper1 = new StartSnapHelper();
+//        PagerSnapHelper linearSnapHelper1 = new PagerSnapHelper();
+        linearSnapHelper1.attachToRecyclerView(recyclerView3);
+    }
+
+    private void initView2() {
+        recyclerView2 = findViewById(R.id.recycler2);
+        adapter2 = new MyAdapter1();
+        recyclerView2.setAdapter(adapter2);
+        linearLayoutManager2 = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        recyclerView2.setLayoutManager(linearLayoutManager2);
+//        LinearSnapHelper linearSnapHelper1 = new LinearSnapHelper();
+        StartSnapHelper linearSnapHelper1 = new StartSnapHelper();
+//        PagerSnapHelper linearSnapHelper1 = new PagerSnapHelper();
+        linearSnapHelper1.attachToRecyclerView(recyclerView2);
     }
 
     private void initEvent() {
@@ -83,26 +116,21 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initButton() {
-        findViewById(R.id.btn_recycler1).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                recyclerView1.scrollToPosition(next++);
-            }
-        });
     }
 
     private void initView() {
         recyclerView1 = findViewById(R.id.recycler1);
         adapter1 = new MyAdapter1();
         recyclerView1.setAdapter(adapter1);
-        linearLayoutManager1 = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+//        linearLayoutManager1 = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+        linearLayoutManager1 = new ScaleLayoutManager(this, 0);
         recyclerView1.setLayoutManager(linearLayoutManager1);
 //        LinearSnapHelper linearSnapHelper1 = new LinearSnapHelper();
 //        StartSnapHelper linearSnapHelper1 = new StartSnapHelper();
-        PagerSnapHelper linearSnapHelper1 = new PagerSnapHelper();
-        linearSnapHelper1.attachToRecyclerView(recyclerView1);
-        recyclerView1.scrollToPosition(Integer.MAX_VALUE / 2 - Integer.MAX_VALUE / 2 % count - 1);
-        recyclerView1.smoothScrollToPosition(Integer.MAX_VALUE / 2 - Integer.MAX_VALUE / 2 % count);
+//        PagerSnapHelper linearSnapHelper1 = new PagerSnapHelper();
+//        linearSnapHelper1.attachToRecyclerView(recyclerView1);
+//        recyclerView1.scrollToPosition(Integer.MAX_VALUE / 2 - Integer.MAX_VALUE / 2 % count - 1);
+//        recyclerView1.smoothScrollToPosition(Integer.MAX_VALUE / 2 - Integer.MAX_VALUE / 2 % count);
     }
 
     public class MyAdapter1 extends RecyclerView.Adapter<ViewHolder1> {
@@ -125,9 +153,6 @@ public class MainActivity extends AppCompatActivity {
             return Integer.MAX_VALUE;
         }
 
-        public int getCurrentPosition() {
-            return 2;
-        }
     }
 
     public static class ViewHolder1 extends RecyclerView.ViewHolder {
