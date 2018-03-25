@@ -4,7 +4,6 @@
     android:layout_width="300dp"
     android:layout_height="200dp">
     <TextView
-        android:layout_margin="10dp"
         android:background="#c68409"
         android:layout_gravity="center"
         android:id="@+id/tv_item1"

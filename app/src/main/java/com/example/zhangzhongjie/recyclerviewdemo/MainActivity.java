@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.concurrent.TimeUnit;
 import java.util.zip.Inflater;
@@ -34,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
     private boolean isTouch = false;
     private RecyclerView recyclerView1;
     private MyAdapter1 adapter1;
-    private LinearLayoutManager linearLayoutManager1;
+    private MyLinearLayoutManager linearLayoutManager1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         initView();
         initButton();
-        initEvent();
+//        initEvent();
     }
 
     private void initEvent() {
@@ -95,14 +96,20 @@ public class MainActivity extends AppCompatActivity {
         recyclerView1 = findViewById(R.id.recycler1);
         adapter1 = new MyAdapter1();
         recyclerView1.setAdapter(adapter1);
-        linearLayoutManager1 = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+//        linearLayoutManager1 = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+//        linearLayoutManager1 = new ScaleLayoutManager(this,0, LinearLayoutManager.HORIZONTAL, false);
+        linearLayoutManager1 = new MyLinearLayoutManager(this,LinearLayoutManager.HORIZONTAL, false);
         recyclerView1.setLayoutManager(linearLayoutManager1);
+
 //        LinearSnapHelper linearSnapHelper1 = new LinearSnapHelper();
 //        StartSnapHelper linearSnapHelper1 = new StartSnapHelper();
         PagerSnapHelper linearSnapHelper1 = new PagerSnapHelper();
+//        MyPagerSnapHelper linearSnapHelper1 = new MyPagerSnapHelper();
         linearSnapHelper1.attachToRecyclerView(recyclerView1);
-        recyclerView1.scrollToPosition(Integer.MAX_VALUE / 2 - Integer.MAX_VALUE / 2 % count - 1);
-        recyclerView1.smoothScrollToPosition(Integer.MAX_VALUE / 2 - Integer.MAX_VALUE / 2 % count);
+//        recyclerView1.setNestedScrollingEnabled(false);
+//        recyclerView1.scrollToPosition(Integer.MAX_VALUE / 2 - Integer.MAX_VALUE / 2 % count);
+        recyclerView1.scrollToPosition(count*80);
+//        recyclerView1.smoothScrollToPosition(Integer.MAX_VALUE / 2 - Integer.MAX_VALUE / 2 % count);
     }
 
     public class MyAdapter1 extends RecyclerView.Adapter<ViewHolder1> {
@@ -116,13 +123,20 @@ public class MainActivity extends AppCompatActivity {
         }
 
         @Override
-        public void onBindViewHolder(ViewHolder1 holder, int position) {
+        public void onBindViewHolder(ViewHolder1 holder, final int position) {
             holder.textView.setText(String.valueOf(position % count));
+            holder.rootView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Toast.makeText(v.getContext(),String.valueOf(position%count),Toast.LENGTH_SHORT).show();
+                }
+            });
         }
 
         @Override
         public int getItemCount() {
             return Integer.MAX_VALUE;
+//            return count;
         }
 
         public int getCurrentPosition() {
@@ -133,47 +147,14 @@ public class MainActivity extends AppCompatActivity {
     public static class ViewHolder1 extends RecyclerView.ViewHolder {
 
         public TextView textView;
+        public View rootView;
 
         public ViewHolder1(View itemView) {
             super(itemView);
+            rootView = itemView;
             textView = itemView.findViewById(R.id.tv_item1);
         }
 
     }
 
-    public class StartSnapHelper extends LinearSnapHelper {
-
-        private OrientationHelper mHorizontalHelper;
-
-        @Override
-        public int[] calculateDistanceToFinalSnap(@NonNull RecyclerView.LayoutManager layoutManager, @NonNull View targetView) {
-            final int childCenter = getHorizontalHelper(layoutManager).getDecoratedStart(targetView);
-            int[] position = super.calculateDistanceToFinalSnap(layoutManager, targetView);
-            position[0] = childCenter;
-            return position;
-        }
-
-        private int distanceToStart(@NonNull RecyclerView.LayoutManager layoutManager,
-                                    @NonNull View targetView, OrientationHelper helper) {
-            final int childCenter = helper.getDecoratedStart(targetView)
-                    + (helper.getDecoratedMeasurement(targetView) / 2);
-            final int containerCenter;
-            if (layoutManager.getClipToPadding()) {
-                containerCenter = helper.getStartAfterPadding() + helper.getTotalSpace() / 2;
-            } else {
-                containerCenter = helper.getEnd() / 2;
-            }
-            return containerCenter;
-        }
-
-        @NonNull
-        private OrientationHelper getHorizontalHelper(
-                @NonNull RecyclerView.LayoutManager layoutManager) {
-            mHorizontalHelper = mHorizontalHelper;
-            if (mHorizontalHelper == null) {
-                mHorizontalHelper = OrientationHelper.createHorizontalHelper(layoutManager);
-            }
-            return mHorizontalHelper;
-        }
-    }
 }
